@@ -96,7 +96,6 @@ declare_quarantine_table(dlayers[0], dlayers[2], table_name[0], sa_location, qua
 
 # DBTITLE 1,Variables Layer
 dlayer = dlayers[3]
-dlayer
 
 # COMMAND ----------
 
