@@ -20,7 +20,7 @@ from pyspark.sql.types import TimestampType
 
 # COMMAND ----------
 
-dbutils.widgets.text('storage_account_location','/mnt/tf-abfssdeve-')
+dbutils.widgets.text('storage_account_location','/mnt/tf-abfssdev-')
 
 # COMMAND ----------
 
@@ -221,8 +221,6 @@ def sellers_silver():
 
 # DBTITLE 1,Variable Layer
 dlayer = dlayers[4]
-dlayer
-
 # COMMAND ----------
 
 # DBTITLE 1,Gold Items
