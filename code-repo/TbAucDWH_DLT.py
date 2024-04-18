@@ -3,7 +3,7 @@
 # MAGIC * Author: Roberto Bonilla
 # MAGIC * Date: 10/03/2024
 # MAGIC * Version: v2.0
-# MAGIC * Comments: Assessment TB Auctions
+# MAGIC * Comments: Assessment TB sales
 # MAGIC
 # MAGIC ## Importing Libraries and preparing DLT Pipeline
 
@@ -33,7 +33,7 @@ from libraries.dlt_pipeline.dlt_table_creation import ( declare_bronze_table, de
 
 # COMMAND ----------
 
-from libraries.dlt_pipeline.quality_checks import ( rules_buyers, quarantine_rules_buyers, rules_auctions,rules_bids, quarantine_rules_bids )
+from libraries.dlt_pipeline.quality_checks import ( rules_buyers, quarantine_rules_buyers, rules_sales,rules_transactions, quarantine_rules_transactions )
 
 # COMMAND ----------
 
@@ -44,7 +44,7 @@ from libraries.dlt_pipeline.quality_checks import ( rules_buyers, quarantine_rul
 
 sa_location = dbutils.widgets.get('storage_account_location')
 dlayers = ['quarantine','source','bronze','silver','gold']
-table_name = ['bids','auctions','buyers']
+table_name = ['transactions','sales','buyers']
 
 # COMMAND ----------
 
@@ -55,12 +55,12 @@ table_name = ['bids','auctions','buyers']
 
 # COMMAND ----------
 
-# DBTITLE 1,Bronze Auctions
+# DBTITLE 1,Bronze sales
 declare_bronze_table(dlayers[2], dlayers[1], table_name[1], sa_location)
 
 # COMMAND ----------
 
-# DBTITLE 1,Bronze Bids
+# DBTITLE 1,Bronze transactions
 declare_bronze_table(dlayers[2], dlayers[1], table_name[0], sa_location)
 
 # COMMAND ----------
@@ -82,8 +82,8 @@ declare_quarantine_table(dlayers[0], dlayers[2], table_name[2], sa_location, qua
 
 # COMMAND ----------
 
-# DBTITLE 1,Quarantine Bids
-declare_quarantine_table(dlayers[0], dlayers[2], table_name[0], sa_location, quarantine_rules_bids)
+# DBTITLE 1,Quarantine transactions
+declare_quarantine_table(dlayers[0], dlayers[2], table_name[0], sa_location, quarantine_rules_transactions)
 
 # COMMAND ----------
 
@@ -107,7 +107,7 @@ saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
@@ -119,76 +119,76 @@ def buyers_silver():
 
 # COMMAND ----------
 
-# DBTITLE 1,Silver Auctions
-table_name = "auctions"
+# DBTITLE 1,Silver sales
+table_name = "sales"
 saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
-@dlt.expect_all_or_fail(rules_auctions)
-def auctions_silver():
-    df= dlt.read('bronze_auctions')
-    df = df.select("auctionid", "auction_type").dropDuplicates()
-    df = df.withColumn("auction_days", regexp_extract("auction_type", "([0-9]+)",1)) \
-            .withColumn("auctionid", df["auctionid"].cast("bigint")) \
-            .withColumnRenamed("auctionid","auction_id")
-    df = df.withColumn("auction_days", df["auction_days"].cast("int"))
+@dlt.expect_all_or_fail(rules_sales)
+def sales_silver():
+    df= dlt.read('bronze_sales')
+    df = df.select("salesid", "sales_type").dropDuplicates()
+    df = df.withColumn("sales_days", regexp_extract("sales_type", "([0-9]+)",1)) \
+            .withColumn("salesid", df["salesid"].cast("bigint")) \
+            .withColumnRenamed("salesid","sales_id")
+    df = df.withColumn("sales_days", df["sales_days"].cast("int"))
     return df
 
 # COMMAND ----------
 
-# DBTITLE 1,Silver Bids
-table_name = "bids"
+# DBTITLE 1,Silver transactions
+table_name = "transactions"
 saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
-@dlt.expect_all_or_drop(rules_bids)
-def bids_silver():
-    df = dlt.read('bronze_bids')
-    df = df.selectExpr('auctionid as auction_id','bid','bidder', 'openbid as open_bid', 'itemid as item_id','item', 'item_description','price', 'datetime')
+@dlt.expect_all_or_drop(rules_transactions)
+def transactions_silver():
+    df = dlt.read('bronze_transactions')
+    df = df.selectExpr('salesid as sales_id','transaction','transactioner', 'opentransaction as open_transaction', 'itemid as item_id','item', 'item_description','price', 'datetime')
     df = df.withColumn("datetime", to_timestamp(df["datetime"], "yyyy-MM-dd HH:mm:ss.SSSSSSSSS")) \
-            .withColumn("auction_id", df["auction_id"].cast("bigint")) \
-            .withColumn("open_bid", df["open_bid"].cast("double")) \
-            .withColumn("bid", df["bid"].cast("double")) \
+            .withColumn("sales_id", df["sales_id"].cast("bigint")) \
+            .withColumn("open_transaction", df["open_transaction"].cast("double")) \
+            .withColumn("transaction", df["transaction"].cast("double")) \
             .withColumn("price", df["price"].cast("double")) \
             .withColumn("item_description", trim(df["item_description"])) \
             .withColumn("item_id", df["item_id"].cast("bigint"))
-    df = df.withColumn("date_bid", df["datetime"].cast("date")) 
+    df = df.withColumn("date_transaction", df["datetime"].cast("date")) 
     return df
 
 # COMMAND ----------
 
-# DBTITLE 1,Silver Auction_Sellers
-table_name = "auction_sellers"
+# DBTITLE 1,Silver sales_Sellers
+table_name = "sales_sellers"
 saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
-def auction_sellers_silver():
-    df = dlt.read('bronze_auctions')
+def sales_sellers_silver():
+    df = dlt.read('bronze_sales')
     df = df.withColumn("seller_id", df["seller_id"].cast("int")) \
-            .withColumn("auctionid", df["auctionid"].cast("bigint")) \
-            .withColumnRenamed("auctionid","auction_id") \
-            .select("seller_id", "auction_id").dropDuplicates()
+            .withColumn("salesid", df["salesid"].cast("bigint")) \
+            .withColumnRenamed("salesid","sales_id") \
+            .select("seller_id", "sales_id").dropDuplicates()
     return df
 
 # COMMAND ----------
@@ -201,12 +201,12 @@ saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
 def sellers_silver():
-    df = dlt.read('bronze_auctions')
+    df = dlt.read('bronze_sales')
     df = df.withColumn("seller_id", df["seller_id"].cast("int")) \
                 .select("seller_id", "name","email", "username").dropDuplicates()
     return df
@@ -231,51 +231,51 @@ saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
 
 def items_gold():
-    df= dlt.read('silver_bids').select("item_id", "item","item_description").drop_duplicates()
+    df= dlt.read('silver_transactions').select("item_id", "item","item_description").drop_duplicates()
     return df
 
 # COMMAND ----------
 
-# DBTITLE 1,Gold Auctions
-table_name = "auctions"
+# DBTITLE 1,Gold sales
+table_name = "sales"
 saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
-def auctions_gold():
-    return dlt.read('silver_auctions').select('auction_id','auction_type', 'auction_days')
+def sales_gold():
+    return dlt.read('silver_sales').select('sales_id','sales_type', 'sales_days')
 
 # COMMAND ----------
 
-# DBTITLE 1,Gold Bids
-table_name = "bids"
+# DBTITLE 1,Gold transactions
+table_name = "transactions"
 saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
-def bids_gold():
-    df_bids =  dlt.read('silver_bids')
-    df_auction_sellers =  dlt.read('silver_auction_sellers')
-    df = df_bids.join(df_auction_sellers, 'auction_id', how="inner") \
-            .select('bid','auction_id', 'item_id','seller_id','bidder','open_bid','price','datetime','date_bid')
+def transactions_gold():
+    df_transactions =  dlt.read('silver_transactions')
+    df_sales_sellers =  dlt.read('silver_sales_sellers')
+    df = df_transactions.join(df_sales_sellers, 'sales_id', how="inner") \
+            .select('transaction','sales_id', 'item_id','seller_id','transactioner','open_transaction','price','datetime','date_transaction')
     return df
 
 # COMMAND ----------
@@ -288,7 +288,7 @@ saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
@@ -305,7 +305,7 @@ saving_path= sa_location+ dlayer+"01/"+dlayer + "/"+table_name
     path=saving_path,
     comment="The "+dlayer+" for the "+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )

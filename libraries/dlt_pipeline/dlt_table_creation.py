@@ -9,7 +9,7 @@ def declare_bronze_table(dlayer, reading_layer, table_name, storage_location):
     path=saving_path,
     comment="The raw"+ table_name+"ingested from sources container.",
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
@@ -24,7 +24,7 @@ def declare_quarantine_table(dlayer, reading_layer, table_name, storage_location
     path=saving_path,
     comment="The raw quarantined data from"+ table_name,
     table_properties={
-      "TbAucPipeline.quality": dlayer,
+      "MlibrePipeline.quality": dlayer,
       "pipelines.autoOptimize.managed": "true"
     }
   )
