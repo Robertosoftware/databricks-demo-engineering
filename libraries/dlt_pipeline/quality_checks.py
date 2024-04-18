@@ -10,15 +10,15 @@ rules_buyers = {
 quarantine_rules_buyers = "NOT({0})".format(" AND ".join(rules_buyers.values()))
 
 
-# rules_bids
-rules_bids = {
-    "valid_bid":"bid IS NOT NULL",
-    "valid_bidder":"bidder IS NOT NULL"
+# rules_transactions
+rules_transactions = {
+    "valid_transaction":"transaction IS NOT NULL",
+    "valid_transactioner":"transactioner IS NOT NULL"
 }
-quarantine_rules_bids = "NOT({0})".format(" AND ".join(rules_bids.values()))
+quarantine_rules_transactions = "NOT({0})".format(" AND ".join(rules_transactions.values()))
 
-# rules_auctions
-rules_auctions = {
-    "valid_auctionid":"auctionid IS NOT NULL", 
-    "valid_auction_type":"auction_type IS NOT NULL"
+# rules_sales
+rules_sales = {
+    "valid_salesid":"salesid IS NOT NULL", 
+    "valid_sales_type":"sales_type IS NOT NULL"
 }
