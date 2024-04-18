@@ -1,10 +1,9 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC * Author: Roberto Bonilla
-# MAGIC * Date: 10/03/2024
+# MAGIC * Date: 18/04/2024
 # MAGIC * Version: v2.0
-# MAGIC * Comments: Assessment TB sales
-# MAGIC
+# MAGIC * Comments: Mlibre Demo
 # MAGIC ## Importing Libraries and preparing DLT Pipeline
 
 # COMMAND ----------
@@ -221,6 +220,7 @@ def sellers_silver():
 
 # DBTITLE 1,Variable Layer
 dlayer = dlayers[4]
+
 # COMMAND ----------
 
 # DBTITLE 1,Gold Items
