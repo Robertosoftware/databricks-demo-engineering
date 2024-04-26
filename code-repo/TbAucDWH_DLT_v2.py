@@ -101,7 +101,7 @@ dlayer = dlayers[3]
 
 # DBTITLE 1,Silver Buyers
 table_name = "buyers"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -120,7 +120,7 @@ def buyers_silver():
 
 # DBTITLE 1,Silver sales
 table_name = "sales"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -143,7 +143,7 @@ def sales_silver():
 
 # DBTITLE 1,Silver transactions
 table_name = "transactions"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -170,7 +170,7 @@ def transactions_silver():
 
 # DBTITLE 1,Silver sales_Sellers
 table_name = "sales_sellers"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -191,7 +191,7 @@ def sales_sellers_silver():
 
 # DBTITLE 1,Silver Sellers
 table_name = "sellers"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -221,7 +221,7 @@ dlayer = dlayers[4]
 
 # DBTITLE 1,Gold Items
 table_name = "items"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -239,7 +239,7 @@ def items_gold():
 
 # DBTITLE 1,Gold sales
 table_name = "sales"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -255,7 +255,7 @@ def sales_gold():
 
 # DBTITLE 1,Gold transactions
 table_name = "transactions"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -275,7 +275,7 @@ def transactions_gold():
 
 # DBTITLE 1,Gold Buyers
 table_name = "buyers"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,
@@ -291,7 +291,7 @@ def buyers_gold():
 
 # DBTITLE 1,Gold Sellers
 table_name = "sellers"
-saving_path="mlibre."+dlayer + "."+table_name
+saving_path= sa_location+"/"+ dlayer+"/"+dlayer + "/"+table_name
 @dlt.table(
     name=dlayer+"_"+table_name,
     comment="The "+dlayer+" for the "+ table_name,

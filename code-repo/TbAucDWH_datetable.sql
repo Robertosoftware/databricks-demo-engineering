@@ -19,15 +19,18 @@
 
 -- COMMAND ----------
 
-use default
+use catalog mlibre
+
+-- COMMAND ----------
+
+use schema dev_ecommerce
 
 -- COMMAND ----------
 
 create or replace table dim_calendar
 using delta
 comment "Calendar dimension for the gold layer"
-tblproperties ( "TbAucPipeline.quality" = "gold")
-location "/mnt/tf-abfssdeve-gold01/gold/calendar"
+tblproperties ( "TbAucPipeline.quality" = "gold", "delta.enableDeletionVectors" = 'false')
 as
 --Set the date range in the dates CTE below
 with dates as (
@@ -57,7 +60,8 @@ select
   end as is_last_day_of_month,
   dayofyear(calendar_date) as day_of_year,
   weekofyear(calendar_date) as week_of_year_iso,
-  quarter(calendar_date) as quarter_of_year
+  quarter(calendar_date) as quarter_of_year,
+  current_timestamp() as _timestamp
 from
   dates
 order by
