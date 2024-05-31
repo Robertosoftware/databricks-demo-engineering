@@ -1,2 +1,2 @@
 # databricks-demo-engineering
- Databricks Demo Delta Live, Workflows, Federated Queries
+ Databricks Demo Delta Live Tables
